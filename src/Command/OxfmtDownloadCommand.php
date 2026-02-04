@@ -45,18 +45,21 @@ final class OxfmtDownloadCommand extends AbstractDownloadBinaryCommand
         $binaryName = '\\' === \DIRECTORY_SEPARATOR ? 'oxfmt.exe' : 'oxfmt';
         $binaryDestinationPath = Path::join($destinationDir, $binaryName);
 
-        if ($this->filesystem->exists($binaryDestinationPath)) {
-            $installedVersion = $this->extractVersionFromBinary($binaryDestinationPath);
-
-            if ($installedVersion === $this->appsVersion) {
-                $io->success(sprintf('Oxfmt %s is already installed.', $this->appsVersion));
-
-                return self::SUCCESS;
-            }
-
-            $io->warning(sprintf('Oxfmt %s is already installed, but requested version is %s. Replacing it.', $installedVersion, $this->appsVersion));
-            $this->filesystem->remove($binaryDestinationPath);
-        }
+        // TODO: "apps_version" is in fact corresponding to Oxlint version and not Oxfmt version.
+        // Meaning that we can't check if Oxfmt needs to be updated or not. It may be improved in the future.
+        //
+        // if ($this->filesystem->exists($binaryDestinationPath)) {
+        //     $installedVersion = $this->extractVersionFromBinary($binaryDestinationPath);
+        //
+        //     if ($installedVersion === $this->appsVersion) {
+        //         $io->success(sprintf('Oxfmt %s is already installed.', $this->appsVersion));
+        //
+        //         return self::SUCCESS;
+        //     }
+        //
+        //     $io->warning(sprintf('Oxfmt %s is already installed, but requested version is %s. Replacing it.', $installedVersion, $this->appsVersion));
+        //     $this->filesystem->remove($binaryDestinationPath);
+        // }
 
         $archiveUrl = sprintf(
             'https://github.com/oxc-project/oxc/releases/download/apps_v%s/%s',
