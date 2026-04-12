@@ -9,25 +9,17 @@ namespace Kocal\OxcBundle;
  */
 final class OxfmtBinary
 {
-    public static function getName(): string
+    public static function getName(string $appsVersion): string
     {
         $platform = Platform::guess();
 
-        return match ($platform->os) {
-            'darwin' => sprintf('oxfmt-darwin-%s', $platform->machine),
-            'linux' => sprintf('oxfmt-linux-%s-%s', $platform->machine, $platform->isMusl ? 'musl' : 'gnu'),
-            'win32' => sprintf('oxfmt-win32-%s.exe', $platform->machine),
-        };
+        return sprintf('oxfmt-%s%s', $platform->getAssetTarget($appsVersion), 'win32' === $platform->os ? '.exe' : '');
     }
 
-    public static function getArchiveName(): string
+    public static function getArchiveName(string $appsVersion): string
     {
         $platform = Platform::guess();
 
-        return match ($platform->os) {
-            'darwin' => sprintf('oxfmt-darwin-%s.tar.gz', $platform->machine),
-            'linux' => sprintf('oxfmt-linux-%s-%s.tar.gz', $platform->machine, $platform->isMusl ? 'musl' : 'gnu'),
-            'win32' => sprintf('oxfmt-win32-%s.zip', $platform->machine),
-        };
+        return sprintf('oxfmt-%s.%s', $platform->getAssetTarget($appsVersion), 'win32' === $platform->os ? 'zip' : 'tar.gz');
     }
 }

@@ -124,7 +124,7 @@ jobs:
           cat << EOF > config/packages/kocal_oxc.yaml
           when@dev:
               kocal_oxc:
-                  apps_version: '1.43.0'
+                  apps_version: '1.59.0'
           EOF
           
           symfony composer require 'kocal/oxc-bundle:*' --dev --no-interaction

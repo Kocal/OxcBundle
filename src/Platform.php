@@ -21,8 +21,8 @@ final class Platform
 
         $machine = strtolower(php_uname('m'));
         $machine = match (true) {
-            str_contains($machine, 'arm64') || str_contains($machine, 'aarch64') => 'arm64',
-            str_contains($machine, 'x86_64') || str_contains($machine, 'amd64') => 'x64',
+            str_contains($machine, 'arm64') || str_contains($machine, 'aarch64') => 'aarch64',
+            str_contains($machine, 'x86_64') || str_contains($machine, 'amd64') => 'x86_64',
             default => throw new \RuntimeException(sprintf('Unsupported platform (machine: %s).', $machine)),
         };
 
@@ -35,13 +35,33 @@ final class Platform
 
     /**
      * @param 'darwin'|'linux'|'win32' $os
-     * @param 'arm64'|'x64'            $machine
+     * @param 'aarch64'|'x86_64'       $machine
      */
     public function __construct(
         public readonly string $os,
         public readonly string $machine,
         public readonly bool $isMusl = false,
     ) {
+    }
+
+    public function getAssetTarget(string $appsVersion): string
+    {
+        // Release assets are named after Rust target triples since apps_v1.46.0
+        if (version_compare($appsVersion, '1.46.0', '<')) {
+            $machine = 'aarch64' === $this->machine ? 'arm64' : 'x64';
+
+            return match ($this->os) {
+                'darwin' => sprintf('darwin-%s', $machine),
+                'linux' => sprintf('linux-%s-%s', $machine, $this->isMusl ? 'musl' : 'gnu'),
+                'win32' => sprintf('win32-%s', $machine),
+            };
+        }
+
+        return match ($this->os) {
+            'darwin' => sprintf('%s-apple-darwin', $this->machine),
+            'linux' => sprintf('%s-unknown-linux-%s', $this->machine, $this->isMusl ? 'musl' : 'gnu'),
+            'win32' => sprintf('%s-pc-windows-msvc', $this->machine),
+        };
     }
 
     public function __toString(): string

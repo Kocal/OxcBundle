@@ -41,7 +41,7 @@ when@dev:
     kocal_oxc:
         # The Oxc apps version to use, that you can find at https://github.com/oxc-project/oxc/tags,
         # it follows the pattern "apps_v<apps_version>"
-        apps_version: '1.43.0'
+        apps_version: '1.59.0'
 
 ```
 
@@ -99,7 +99,7 @@ when@dev:
     kocal_oxc:
         # The Oxc apps version to use, that you can find at https://github.com/oxc-project/oxc/tags,
         # it follows the pattern "apps_v<apps_version>"
-        apps_version: '1.43.0'
+        apps_version: '1.59.0'
 
 ```
 

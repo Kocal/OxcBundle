@@ -53,9 +53,9 @@ final class OxcBundle extends Extension implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('apps_version')
-                    ->info('The version of git tag "apps_v*" to download. For example, git tag "apps_v1.43.0" corresponds to version "1.43.0".')
+                    ->info('The version of git tag "apps_v*" to download. For example, git tag "apps_v1.59.0" corresponds to version "1.59.0".')
                     ->isRequired()
-                    ->example('1.43.0')
+                    ->example('1.59.0')
                 ->end()
             ->end();
 

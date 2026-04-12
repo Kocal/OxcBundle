@@ -61,13 +61,13 @@ final class OxlintDownloadCommand extends AbstractDownloadBinaryCommand
         $archiveUrl = sprintf(
             'https://github.com/oxc-project/oxc/releases/download/apps_v%s/%s',
             $this->appsVersion,
-            $archiveName = OxlintBinary::getArchiveName(),
+            $archiveName = OxlintBinary::getArchiveName($this->appsVersion),
         );
         $this->downloadArchiveAndExtractTo(
             $io,
             $archiveUrl,
             $archiveName,
-            OxlintBinary::getName(),
+            OxlintBinary::getName($this->appsVersion),
             $binaryDestinationPath
         );
 
