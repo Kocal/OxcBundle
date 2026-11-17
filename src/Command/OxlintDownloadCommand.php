@@ -21,7 +21,7 @@ final class OxlintDownloadCommand extends AbstractDownloadBinaryCommand
 {
     public function __construct(
         private readonly Filesystem $filesystem,
-        ?HttpClientInterface $httpClient = null,
+        ?HttpClientInterface $httpClient,
         private readonly string $appsVersion,
     ) {
         parent::__construct($this->filesystem, $httpClient);
@@ -71,7 +71,7 @@ final class OxlintDownloadCommand extends AbstractDownloadBinaryCommand
             $binaryDestinationPath
         );
 
-        $io->success(sprintf('Done, you can now run Oxlint with "%s".', Path::makeRelative($binaryDestinationPath, getcwd())));
+        $io->success(sprintf('Done, you can now run Oxlint with "%s".', Path::makeRelative($binaryDestinationPath, (string) getcwd())));
 
         return self::SUCCESS;
     }
