@@ -64,13 +64,13 @@ final class OxfmtDownloadCommand extends AbstractDownloadBinaryCommand
         $archiveUrl = sprintf(
             'https://github.com/oxc-project/oxc/releases/download/apps_v%s/%s',
             $this->appsVersion,
-            $archiveName = OxfmtBinary::getArchiveName(),
+            $archiveName = OxfmtBinary::getArchiveName($this->appsVersion),
         );
         $this->downloadArchiveAndExtractTo(
             $io,
             $archiveUrl,
             $archiveName,
-            OxfmtBinary::getName(),
+            OxfmtBinary::getName($this->appsVersion),
             $binaryDestinationPath
         );
 
