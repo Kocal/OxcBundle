@@ -29,6 +29,9 @@ final class OxcBundle extends Extension implements ConfigurationInterface
             ->setArgument(2, $config['apps_version']);
     }
 
+    /**
+     * @param array<mixed> $config
+     */
     public function getConfiguration(array $config, ContainerBuilder $container): ConfigurationInterface
     {
         return $this;
