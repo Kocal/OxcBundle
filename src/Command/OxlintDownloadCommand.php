@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Kocal\OxcBundle\Command;
 
 use Kocal\OxcBundle\OxlintBinary;
+use Kocal\OxcBundle\Platform;
+use Kocal\OxcBundle\Release;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -22,13 +24,15 @@ final class OxlintDownloadCommand extends AbstractDownloadBinaryCommand
     public function __construct(
         private readonly Filesystem $filesystem,
         ?HttpClientInterface $httpClient,
-        private readonly string $appsVersion,
+        private readonly ?string $oxlintVersion,
+        private readonly ?string $appsVersion,
     ) {
         parent::__construct($this->filesystem, $httpClient);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $release = Release::forOxlint($this->oxlintVersion, $this->appsVersion);
         $io = new SymfonyStyle($input, $output);
 
         $destinationDir = $input->getArgument('destination-dir');
@@ -46,28 +50,27 @@ final class OxlintDownloadCommand extends AbstractDownloadBinaryCommand
         $binaryDestinationPath = Path::join($destinationDir, $binaryName);
 
         if ($this->filesystem->exists($binaryDestinationPath)) {
-            $installedVersion = $this->extractVersionFromBinary($binaryDestinationPath);
+            $installedVersion = $this->findInstalledVersion($binaryDestinationPath);
 
-            if ($installedVersion === $this->appsVersion) {
-                $io->success(sprintf('Oxlint %s is already installed.', $this->appsVersion));
+            if (null !== $installedVersion && $installedVersion === $release->version) {
+                $io->success(sprintf('Oxlint %s is already installed.', $release->version));
 
                 return self::SUCCESS;
             }
 
-            $io->warning(sprintf('Oxlint %s is already installed, but requested version is %s. Replacing it.', $installedVersion, $this->appsVersion));
+            $io->warning(null === $installedVersion
+                ? 'Oxlint is already installed, replacing it.'
+                : sprintf('Oxlint %s is already installed, but requested version is %s. Replacing it.', $installedVersion, $release->version));
             $this->filesystem->remove($binaryDestinationPath);
         }
 
-        $archiveUrl = sprintf(
-            'https://github.com/oxc-project/oxc/releases/download/apps_v%s/%s',
-            $this->appsVersion,
-            $archiveName = OxlintBinary::getArchiveName($this->appsVersion),
-        );
+        $platform = Platform::guess();
+        $archiveName = OxlintBinary::getArchiveName($release, $platform);
         $this->downloadArchiveAndExtractTo(
             $io,
-            $archiveUrl,
+            $release->getAssetUrl($archiveName),
             $archiveName,
-            OxlintBinary::getName($this->appsVersion),
+            OxlintBinary::getName($release, $platform),
             $binaryDestinationPath
         );
 

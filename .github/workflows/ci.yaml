@@ -44,6 +44,7 @@ jobs:
         php-version: [ '8.1', '8.2', '8.3', '8.4' ]
         dependency-version: [ '' ]
         symfony-version: [ '' ]
+        apps-version: [ '' ]
         minimum-stability: [ 'stable' ]
         include:
           # dev packages (probably not needed to have multiple such jobs)
@@ -62,6 +63,10 @@ jobs:
              symfony-version: '7.0.*'
           -  php-version: '8.4'
              symfony-version: '8.0.*'
+
+          # Deprecated "apps_version" option
+          -  php-version: '8.4'
+             apps-version: '1.84.0'
 
           # Windows (lowest)
           - os: 'windows-latest'
@@ -124,7 +129,8 @@ jobs:
           cat << EOF > config/packages/kocal_oxc.yaml
           when@dev:
               kocal_oxc:
-                  apps_version: '1.59.0'
+                  oxlint_version: '1.94.0'
+                  oxfmt_version: '0.79.0'
           EOF
           
           symfony composer require 'kocal/oxc-bundle:*' --dev --no-interaction
@@ -153,11 +159,29 @@ jobs:
           }
           EOF
 
+      - name: Use the deprecated apps_version option
+        if: matrix.apps-version
+        working-directory: my_app
+        run: |
+          cat << EOF > config/packages/kocal_oxc.yaml
+          when@dev:
+              kocal_oxc:
+                  apps_version: '${{ matrix.apps-version }}'
+          EOF
+
       - name: Download Oxlint
         working-directory: my_app
         run: symfony console oxc:download:oxlint
 
       - name: Download Oxfmt
+        working-directory: my_app
+        run: symfony console oxc:download:oxfmt
+
+      - name: Download Oxlint again
+        working-directory: my_app
+        run: symfony console oxc:download:oxlint
+
+      - name: Download Oxfmt again
         working-directory: my_app
         run: symfony console oxc:download:oxfmt
 
