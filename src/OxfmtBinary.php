@@ -9,17 +9,13 @@ namespace Kocal\OxcBundle;
  */
 final class OxfmtBinary
 {
-    public static function getName(string $appsVersion): string
+    public static function getName(Release $release, Platform $platform): string
     {
-        $platform = Platform::guess();
-
-        return sprintf('oxfmt-%s%s', $platform->getAssetTarget($appsVersion), 'win32' === $platform->os ? '.exe' : '');
+        return sprintf('oxfmt-%s%s', $release->getAssetTarget($platform), 'win32' === $platform->os ? '.exe' : '');
     }
 
-    public static function getArchiveName(string $appsVersion): string
+    public static function getArchiveName(Release $release, Platform $platform): string
     {
-        $platform = Platform::guess();
-
-        return sprintf('oxfmt-%s.%s', $platform->getAssetTarget($appsVersion), 'win32' === $platform->os ? 'zip' : 'tar.gz');
+        return sprintf('oxfmt-%s.%s', $release->getAssetTarget($platform), 'win32' === $platform->os ? 'zip' : 'tar.gz');
     }
 }

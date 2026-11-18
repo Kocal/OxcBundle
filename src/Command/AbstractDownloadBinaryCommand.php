@@ -52,6 +52,15 @@ abstract class AbstractDownloadBinaryCommand extends Command
         return trim($matches['version']);
     }
 
+    protected function findInstalledVersion(string $binaryPath): ?string
+    {
+        try {
+            return $this->extractVersionFromBinary($binaryPath);
+        } catch (\RuntimeException) {
+            return null;
+        }
+    }
+
     protected function downloadArchiveAndExtractTo(SymfonyStyle $io, string $archiveUrl, string $archiveName, string $binaryName, string $binaryDestinationPath): void
     {
         $io->note(sprintf('Downloading %s', $archiveUrl));

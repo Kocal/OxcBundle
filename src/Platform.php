@@ -47,19 +47,19 @@ final class Platform
     ) {
     }
 
-    public function getAssetTarget(string $appsVersion): string
+    public function getLegacyAssetTarget(): string
     {
-        // Release assets are named after Rust target triples since apps_v1.46.0
-        if (version_compare($appsVersion, '1.46.0', '<')) {
-            $machine = 'aarch64' === $this->machine ? 'arm64' : 'x64';
+        $machine = 'aarch64' === $this->machine ? 'arm64' : 'x64';
 
-            return match ($this->os) {
-                'darwin' => sprintf('darwin-%s', $machine),
-                'linux' => sprintf('linux-%s-%s', $machine, $this->isMusl ? 'musl' : 'gnu'),
-                'win32' => sprintf('win32-%s', $machine),
-            };
-        }
+        return match ($this->os) {
+            'darwin' => sprintf('darwin-%s', $machine),
+            'linux' => sprintf('linux-%s-%s', $machine, $this->isMusl ? 'musl' : 'gnu'),
+            'win32' => sprintf('win32-%s', $machine),
+        };
+    }
 
+    public function getAssetTarget(): string
+    {
         return match ($this->os) {
             'darwin' => sprintf('%s-apple-darwin', $this->machine),
             'linux' => sprintf('%s-unknown-linux-%s', $this->machine, $this->isMusl ? 'musl' : 'gnu'),

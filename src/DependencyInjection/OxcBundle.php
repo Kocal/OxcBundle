@@ -19,14 +19,16 @@ final class OxcBundle extends Extension implements ConfigurationInterface
         $loader->load('services.php');
 
         $configuration = $this->getConfiguration($configs, $container);
-        /** @var array<string> $config */
+        /** @var array{oxlint_version: ?string, oxfmt_version: ?string, apps_version: ?string} $config */
         $config = $this->processConfiguration($configuration, $configs);
 
         $container->getDefinition('oxc.command.download_oxlint')
-            ->setArgument(2, $config['apps_version']);
+            ->setArgument(2, $config['oxlint_version'])
+            ->setArgument(3, $config['apps_version']);
 
         $container->getDefinition('oxc.command.download_oxfmt')
-            ->setArgument(2, $config['apps_version']);
+            ->setArgument(2, $config['oxfmt_version'])
+            ->setArgument(3, $config['apps_version']);
     }
 
     /**
@@ -52,10 +54,21 @@ final class OxcBundle extends Extension implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('oxlint_version')
+                    ->info('The Oxlint version to download, from git tags "oxlint_v*" (or "apps_v*" up to 1.84.0).')
+                    ->defaultNull()
+                    ->example('1.94.0')
+                ->end()
+                ->scalarNode('oxfmt_version')
+                    ->info('The Oxfmt version to download, from git tags "oxfmt_v*" (0.70.0 and newer).')
+                    ->defaultNull()
+                    ->example('0.79.0')
+                ->end()
                 ->scalarNode('apps_version')
-                    ->info('The version of git tag "apps_v*" to download. For example, git tag "apps_v1.59.0" corresponds to version "1.59.0".')
-                    ->isRequired()
-                    ->example('1.59.0')
+                    ->info('The version of git tag "apps_v*" to download, for both Oxlint and Oxfmt. For example, git tag "apps_v1.84.0" corresponds to version "1.84.0".')
+                    ->setDeprecated('kocal/oxc-bundle', '1.1', 'The "%node%" option is deprecated, use "oxlint_version" and "oxfmt_version" instead.')
+                    ->defaultNull()
+                    ->example('1.84.0')
                 ->end()
             ->end();
 

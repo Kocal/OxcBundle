@@ -39,9 +39,10 @@ return [
 ```yaml
 when@dev:
     kocal_oxc:
-        # The Oxc apps version to use, that you can find at https://github.com/oxc-project/oxc/tags,
-        # it follows the pattern "apps_v<apps_version>"
-        apps_version: '1.59.0'
+        # The Oxlint version to use, see https://github.com/oxc-project/oxc/releases?q=oxlint_v
+        oxlint_version: '1.94.0'
+        # The Oxfmt version to use, see https://github.com/oxc-project/oxc/releases?q=oxfmt_v
+        oxfmt_version: '0.79.0'
 
 ```
 
@@ -97,11 +98,17 @@ The bundle is configured in the `config/packages/kocal_oxc.yaml` file:
 ```yaml
 when@dev:
     kocal_oxc:
-        # The Oxc apps version to use, that you can find at https://github.com/oxc-project/oxc/tags,
-        # it follows the pattern "apps_v<apps_version>"
-        apps_version: '1.59.0'
+        # The Oxlint version to use, see https://github.com/oxc-project/oxc/releases?q=oxlint_v
+        oxlint_version: '1.94.0'
+        # The Oxfmt version to use, see https://github.com/oxc-project/oxc/releases?q=oxfmt_v
+        oxfmt_version: '0.79.0'
 
 ```
+
+> [!NOTE]
+> The former `apps_version` option is deprecated but still works: it downloads both tools from the `apps_v*` tags, which stop at `1.84.0`.
+> It is the only way to get Oxfmt older than `0.70.0`.
+> When `oxlint_version` or `oxfmt_version` is set, it takes precedence over `apps_version`.
 
 ## Usage
 

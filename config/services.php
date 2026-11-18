@@ -21,12 +21,14 @@ return static function (ContainerConfigurator $container): void {
 
         ->set('oxc.command.download_oxlint', OxlintDownloadCommand::class)
         ->parent('oxc.command.abstract_download_binary')
-        ->arg(2, abstract_arg('Apps version'))
+        ->arg(2, abstract_arg('Oxlint version'))
+        ->arg(3, abstract_arg('Apps version'))
         ->tag('console.command')
 
         ->set('oxc.command.download_oxfmt', OxfmtDownloadCommand::class)
         ->parent('oxc.command.abstract_download_binary')
-        ->arg(2, abstract_arg('Apps version'))
+        ->arg(2, abstract_arg('Oxfmt version'))
+        ->arg(3, abstract_arg('Apps version'))
         ->tag('console.command')
     ;
 };
